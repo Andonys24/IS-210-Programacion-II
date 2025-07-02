@@ -5,22 +5,24 @@ import java.util.Random;
 public class DiceThrower implements Runnable {
     private final Object lock;
     private static int totalSum = 0;
+    private int launchValue;
 
     //    Constructor q recibe lock como parametro
     public DiceThrower(Object lock) {
         this.lock = lock;
+        this.launchValue = 0;
     }
 
 
     @Override
     public void run() {
         var rand = new Random();
-        int launch = rand.nextInt(6) + 1;
+        launchValue = rand.nextInt(6) + 1;
 
         synchronized (lock) { // Sincronizar recurso compartido
-            System.out.println(Thread.currentThread().getName() + " lanzo un ...");
-            drawDice(launch);
-            totalSum += launch;
+            System.out.println(Thread.currentThread().getName() + " obtuvo un : " + launchValue);
+            totalSum += launchValue;
+            drawDice();
         }
     }
 
@@ -29,11 +31,15 @@ public class DiceThrower implements Runnable {
         return totalSum;
     }
 
+    public int getLaunchValue() {
+        return launchValue;
+    }
+
     //    Metodos de Comportamiento
-    public void drawDice(final int launch) {
+    public void drawDice() {
         System.out.println("\n -------");
 
-        switch (launch) {
+        switch (launchValue) {
             case 1 -> {
                 System.out.println("|       |");
                 System.out.println("|   *   |");
