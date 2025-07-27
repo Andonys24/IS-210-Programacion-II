@@ -2,7 +2,6 @@ package com.fileserver.client;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Scanner;
 
 import com.fileserver.utils.RequestManager;
 import com.fileserver.utils.UI;
@@ -14,25 +13,24 @@ public class ClientApp {
     private static RequestManager rm;
 
     public static void main(String[] args) {
-        Scanner input;
         UI.cleanConsole();
 
         if (!establishConnection()) {
             return;
         }
 
-        input = new Scanner(System.in);
-
         try {
             rm = new RequestManager(socket.getInputStream(), socket.getOutputStream());
-            rm.processInput();
-            rm.processInput();
+
+            while (connected) {
+                // Decidir si el cliente cierra conexion
+                connected = !rm.processInput();
+            }
+            // Liberar memoria al cerrar la conexion
             cleanUp();
         } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());
         }
-
-        input.close();
 
     }
 

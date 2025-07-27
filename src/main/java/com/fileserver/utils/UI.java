@@ -39,7 +39,7 @@ public class UI {
     }
 
     public static void generateMenu(final String title, final String[] options) {
-        generateTitle(title, false);
+        generateTitle(title, true);
 
         if (options.length == 0 || options == null) {
             System.out.println("NO hay opciones disponibles.");

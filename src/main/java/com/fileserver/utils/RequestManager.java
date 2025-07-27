@@ -16,9 +16,10 @@ import java.util.Arrays;
 public class RequestManager {
     private final DataInputStream in;
     private final DataOutputStream out;
+    private Console console;
 
     public enum CommandType {
-        MESSAGE, FILE, TITLE, MENU, OPTION
+        MESSAGE, FILE, TITLE, MENU, OPTION, EXIT, PAUSE
     }
 
     // Contructor
@@ -46,6 +47,14 @@ public class RequestManager {
 
     public void sendTitle(String title) throws IOException {
         sendReply(CommandType.TITLE, title);
+    }
+
+    public void sendPause(String message) throws IOException {
+        sendReply(CommandType.PAUSE, message);
+    }
+
+    public void sendExit() throws IOException {
+        sendReply(CommandType.EXIT, "");
     }
 
     public void sendMenu(String title, String[] options) throws IOException {
@@ -98,7 +107,6 @@ public class RequestManager {
 
     public void receiveFile(String filename, long fileSize) throws IOException {
         Path fullPath = FileManager.resolve("Downloads/" + filename);
-        System.out.println("Ruta completa: " + fullPath);
 
         try (var fileOut = new FileOutputStream(fullPath.toFile())) {
             byte[] buffer = new byte[4096];
@@ -120,7 +128,7 @@ public class RequestManager {
         System.out.println("Archivo guardado: " + fullPath);
     }
 
-    public void processInput() throws IOException {
+    public boolean processInput() throws IOException {
         String[] parts = getParts();
         CommandType header = CommandType.valueOf(parts[0]);
 
@@ -139,16 +147,33 @@ public class RequestManager {
                 UI.generateMenu(title, options);
                 break;
             case OPTION:
-                System.out.println("Opción recibida: " + parts[1]);
+                System.out.println("El servidor Pidio una opcion");
+                startConsole();
+                int option = console.validateOption(parts[1]);
+                sendOption(Integer.toString(option));
                 break;
             case FILE:
                 String fileName = parts[1];
                 long fileSize = Long.parseLong(parts[2]);
                 receiveFile(fileName, fileSize);
                 break;
+            case PAUSE:
+                startConsole();
+                console.pause(parts[1]);
+                break;
+            case EXIT:
+                return true;
             default:
                 System.out.println("El Encabezado '" + header + "' No se reconoce");
                 break;
+        }
+
+        return false;
+    }
+
+    private void startConsole() {
+        if (console == null) {
+            console = new Console();
         }
     }
 
@@ -158,5 +183,7 @@ public class RequestManager {
             in.close();
         if (out != null)
             out.close();
+        if (console != null)
+            console.closeConsole();
     }
 }
