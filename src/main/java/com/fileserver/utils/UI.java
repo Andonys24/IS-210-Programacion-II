@@ -25,4 +25,28 @@ public class UI {
             System.out.println("Error inesperado: " + ex.getMessage());
         }
     }
+
+    public static void generateTitle(final String title, boolean clean) {
+        String asterisk = "*".repeat(title.length() * 3);
+        String spaces = " ".repeat(title.length() - 1);
+
+        if (clean)
+            cleanConsole();
+
+        System.out.println("\n" + asterisk);
+        System.out.println("*" + spaces + title + spaces + "*");
+        System.out.println(asterisk + "\n");
+    }
+
+    public static void generateMenu(final String title, final String[] options) {
+        generateTitle(title, false);
+
+        if (options.length == 0 || options == null) {
+            System.out.println("NO hay opciones disponibles.");
+        }
+
+        for (int i = 0; i < options.length; i++) {
+            System.out.println("[" + (i + 1) + "] - " + options[i]);
+        }
+    }
 }
