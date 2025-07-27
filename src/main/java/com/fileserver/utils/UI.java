@@ -43,6 +43,7 @@ public class UI {
 
         if (options.length == 0 || options == null) {
             System.out.println("NO hay opciones disponibles.");
+            return;
         }
 
         for (int i = 0; i < options.length; i++) {

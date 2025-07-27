@@ -89,12 +89,11 @@ public class FileManager {
     }
 
     public static String[] getFilesString(String relativeDirPath) {
-        Path dir = resolve(relativeDirPath);
+
         String[] filesString;
         File[] files;
-        var directory = dir.toFile();
 
-        files = directory.listFiles();
+        files = getFiles(relativeDirPath);
 
         if (files == null || files.length < 1) {
             return null;
@@ -108,5 +107,20 @@ public class FileManager {
         }
 
         return filesString;
+    }
+
+    public static Path handleNameConflict(String directory, String fileName) {
+        Path filePath = FileManager.resolve(directory + "/" + fileName);
+
+        if (!Files.exists(filePath)) {
+            return filePath;
+        }
+
+        String name = fileName.substring(0, fileName.lastIndexOf('.'));
+        String extension = fileName.substring(fileName.lastIndexOf('.'));
+        String timestamp = DateUtil.formatDate("yyyyMMdd_HHmmss");
+        String newFileName = name + "_" + timestamp + extension;
+
+        return FileManager.resolve(directory + "/" + newFileName);
     }
 }

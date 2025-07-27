@@ -24,7 +24,7 @@ public class ClientHandler implements Runnable {
         boolean keepRunning = true;
         String[] options = { "Listar Archivos", "Solicitar archivo", "Subir Archivo", "Salir" };
         try {
-            var rm = new RequestManager(client.getInputStream(), client.getOutputStream());
+            var rm = new RequestManager(client.getInputStream(), client.getOutputStream(), logger);
 
             while (keepRunning) {
                 boolean validate = false;
@@ -75,12 +75,33 @@ public class ClientHandler implements Runnable {
                             }
                             // Cuando sea valida la opcion enviar archivo
                             rm.sendFile(files[choice].getName());
-                            rm.sendMessage("Archivo Descargado Correctamente");
+                            rm.sendMessage("Descarga Completada.");
                         }
                         break;
                     case 3:
-                        // El cliente subira un archivo
-                        rm.sendMessage("Subir archivo al Servidor");
+                        // El cliente subira un archivo y se descarga en el servidor
+                        rm.sendUploadFile("");
+                        String[] response = rm.getParts();
+
+                        switch (response[1]) {
+                            case "NO_FILES_TO_UPLOADS":
+                                rm.sendMessage("El cliente no tiene archivos para subir");
+                                break;
+                            case "UPLOAD_CANCELLED":
+                                rm.sendMessage("Subida cancelada por el cliente");
+                                break;
+                            case "DOWNLOAD_FILE":
+                                rm.processInput();
+                                rm.sendMessage("Archivo Subido Exitosamente.");
+                                break;
+                            case "UPLOAD_ERROR":
+                                rm.sendMessage("Error al subir archivo: " + response[2]);
+                                break;
+
+                            default:
+                                rm.sendMessage("Respuesta no reconocida del cliente");
+                                break;
+                        }
                         break;
                     case 4:
                         // El cliente se saldra
