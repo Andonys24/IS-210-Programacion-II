@@ -37,30 +37,7 @@ public class Console {
         return entrada;
     }
 
-    public int validateOptionRange(String message, int max) {
-        if (max < 1) {
-            System.err.println("El valor max no puede ser < 1");
-            return 0;
-        }
-
-        while (true) {
-            int option = validateOption(message);
-
-            if (option < 1) {
-                System.err.println("La eleccion no puede ser menor que 1.");
-                continue;
-            }
-
-            if (option > max) {
-                System.err.println("La eleccion no puede ser mayor que " + max);
-                continue;
-            }
-
-            return option;
-        }
-    }
-
-    public void closeConsole() {
+    public void close() {
         if (input != null) {
             input.close();
         }

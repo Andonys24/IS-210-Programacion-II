@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 import java.util.Scanner;
 
 import com.fileserver.utils.Config;
+import com.fileserver.utils.FileManager;
 import com.fileserver.utils.Logger;
 import com.fileserver.utils.UI;
 
@@ -13,10 +14,12 @@ public class ServerApp {
     private static volatile boolean running = false;
 
     public static void main(String[] args) {
+        var fileManager = new FileManager(FileManager.Context.SERVER);
+
         final var PORT = Integer.parseInt(Config.get("PORT"));
         final ServerSocket server;
         final Scanner input;
-        final Logger logger = new Logger();
+        final Logger logger = new Logger(fileManager);
 
         UI.cleanConsole();
 
@@ -64,7 +67,7 @@ public class ServerApp {
                 }
             }
 
-            logger.info("CONSOLE", "THREAD_ENDED", "Hilo de monitoreo terminado", null);
+            logger.debug("CONSOLE", "THREAD_ENDED", "Hilo de monitoreo terminado", null);
         });
         consoleThread.setDaemon(true);
         consoleThread.start();
@@ -79,7 +82,7 @@ public class ServerApp {
                 logger.debug("SYSTEM", "THREAD_CREATED", "Hilo virtual para: " + clientInfo, null);
 
                 // Hilo virtual para atender los clientes
-                Thread.ofVirtual().start((new ClientHandler(client, logger)));
+                Thread.ofVirtual().start((new ClientHandler(client, fileManager, logger)));
 
             } catch (IOException e) {
 

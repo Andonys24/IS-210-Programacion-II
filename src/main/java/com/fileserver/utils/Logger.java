@@ -9,7 +9,7 @@ public class Logger {
         TRACE, DEBUG, INFO, WARN, ERROR, FATAL
     }
 
-    private static final String FILE_DIR = "Logs";
+    private final FileManager fileManager;
     private final String nameFileLog;
     private final ExecutorService executor;
     private final Object logLock = new Object();
@@ -21,15 +21,16 @@ public class Logger {
         }
     }
 
-    public Logger() {
+    public Logger(FileManager fileManager) {
+        this.fileManager = fileManager;
         // Crear directorio para almacenar logs
-        FileManager.createDirectory(FILE_DIR);
+        fileManager.createDirectory(FileManager.Directory.LOGS);
 
         var dateFormat = DateUtil.formatDate("dd-MM-yyyy");
         nameFileLog = dateFormat + ".log";
 
         // Crear archivo q almacena los logs (por dia)
-        FileManager.createFile(FILE_DIR + "/" + nameFileLog);
+        fileManager.createFile(FileManager.Directory.LOGS, nameFileLog);
 
         // Iniciar hilo independiente para los logs
         executor = Executors.newSingleThreadExecutor();
@@ -55,7 +56,7 @@ public class Logger {
             logEntry.append("ID:").append(identifier);
 
             String finalLog = logEntry.toString();
-            FileManager.appendToFile(FILE_DIR + "/" + nameFileLog, finalLog);
+            writeLog(finalLog);
 
             synchronized (logLock) {
                 lastLog = finalLog;
@@ -80,29 +81,24 @@ public class Logger {
         log(LogLevel.DEBUG, category, event, details, source);
     }
 
-    public void registerLog(String event, String source) {
-        info("GENERAL", event, null, source);
-    }
-
-    public void info(String category, String event, String source) {
-        info(category, event, null, source);
-    }
-
-    public void error(String category, String event, String source) {
-        error(category, event, null, source);
+    private void writeLog(String logEntry) {
+        fileManager.appendToFile(FileManager.Directory.LOGS, nameFileLog, logEntry);
     }
 
     private void printLogWithColor(LogLevel level, String logEntry) {
-        String color = switch (level) {
-            case ERROR, FATAL -> "\033[91m"; // Rojo
-            case WARN -> "\033[93m"; // Amarillo
-            case INFO -> "\033[92m"; // Verde
-            case DEBUG -> "\033[94m"; // Azul
-            case TRACE -> "\033[95m"; // Magenta
-        };
-        String reset = "\033[0m";
+        // Solo imprimir logs en consola cuando el contexto es SERVER
+        if (fileManager.getContext() == FileManager.Context.SERVER) {
+            String color = switch (level) {
+                case ERROR, FATAL -> "\033[91m"; // Rojo
+                case WARN -> "\033[93m"; // Amarillo
+                case INFO -> "\033[92m"; // Verde
+                case DEBUG -> "\033[94m"; // Azul
+                case TRACE -> "\033[95m"; // Magenta
+            };
+            String reset = "\033[0m";
 
-        System.out.println(color + "Log: " + logEntry + reset);
+            System.out.println(color + "Log: " + logEntry + reset);
+        }
     }
 
     public void close() {

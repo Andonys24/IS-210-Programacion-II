@@ -1,9 +1,7 @@
 package com.fileserver.server;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Arrays;
 
 import com.fileserver.utils.FileManager;
 import com.fileserver.utils.Logger;
@@ -12,10 +10,13 @@ import com.fileserver.utils.RequestManager;
 public class ClientHandler implements Runnable {
 
     private final Socket client;
+    private final FileManager fileManager;
     private final Logger logger;
+    private ServerRequestHandler serverHandler;
 
-    public ClientHandler(Socket socket, Logger logger) {
+    public ClientHandler(Socket socket, FileManager fileManager, Logger logger) {
         this.client = socket;
+        this.fileManager = fileManager;
         this.logger = logger;
     }
 
@@ -23,116 +24,74 @@ public class ClientHandler implements Runnable {
     public void run() {
         boolean keepRunning = true;
         String[] options = { "Listar Archivos", "Solicitar archivo", "Subir Archivo", "Salir" };
+        String clientInfo = client.getInetAddress().toString() + ":" + client.getPort();
+
+        logger.info("CLIENT", "SESSION_STARTED", "Sesión iniciada para: " + clientInfo,
+                client.getInetAddress().toString());
+
         try {
-            var rm = new RequestManager(client.getInputStream(), client.getOutputStream(), logger);
+            serverHandler = new ServerRequestHandler(client.getInputStream(), client.getOutputStream(), fileManager,
+                    logger);
+
+            logger.debug("CLIENT", "REQUEST_MANAGER_CREATED", "RequestManager y ServerRequestHandler creados",
+                    clientInfo);
 
             while (keepRunning) {
-                boolean validate = false;
-                String[] filesString = null;
-                // Enviar menu principal
-                rm.sendMenu("Menu Principal", options);
-                rm.sendOption("Ingrese una opcion");
-                // Esperar opcion del cliente
-                switch (rm.readClientOption()) {
-                    case 1:
-                        // Listar los archivos disponibles
-                        filesString = FileManager.getFilesString("Files");
+                serverHandler.sendMenu("Menu Principal", options);
+                serverHandler.sendOption("Ingrese una opcion");
 
-                        if (filesString.length == 0 || filesString == null) {
-                            rm.sendTitle("No hay Archivos Disponibles");
-                        } else {
-                            rm.sendMenu("Archivos Disponibles", filesString);
-                        }
-                        break;
-                    case 2:
-                        // Listar los archivos disponibles
-                        File[] files = FileManager.getFiles("Files");
-                        String[] originalFiles = FileManager.getFilesString("Files");
+                int option = serverHandler.readClientOption();
 
-                        // Crear arreglo con un elemento adicional
-                        filesString = Arrays.copyOf(originalFiles, originalFiles.length + 1);
-                        filesString[originalFiles.length] = "Regresar"; // Agregar en la última posición
+                logger.debug("CLIENT", "MENU_OPTION_PROCESSING", "Procesando opción: " + option, clientInfo);
 
-                        if (filesString.length == 0 || filesString == null) {
-                            rm.sendTitle("No hay Archivos Disponibles");
-                        } else {
-                            int choice = 0;
-                            while (!validate) {
-                                rm.sendMenu("Archivos Disponibles para Descargar", filesString);
-                                rm.sendOption("Elija un Archivo");
-                                choice = rm.readClientOption() - 1;
-
-                                if (choice < 0 || choice > filesString.length) {
-                                    rm.sendMessage("Opcion NO valida");
-                                    continue;
-                                }
-
-                                validate = true;
-                            }
-
-                            if (choice == originalFiles.length) {
-                                break;
-                            }
-                            // Cuando sea valida la opcion enviar archivo
-                            rm.sendFile(files[choice].getName());
-                            rm.sendMessage("Descarga Completada.");
-                        }
-                        break;
-                    case 3:
-                        // El cliente subira un archivo y se descarga en el servidor
-                        rm.sendUploadFile("");
-                        String[] response = rm.getParts();
-
-                        switch (response[1]) {
-                            case "NO_FILES_TO_UPLOADS":
-                                rm.sendMessage("El cliente no tiene archivos para subir");
-                                break;
-                            case "UPLOAD_CANCELLED":
-                                rm.sendMessage("Subida cancelada por el cliente");
-                                break;
-                            case "DOWNLOAD_FILE":
-                                rm.processInput();
-                                rm.sendMessage("Archivo Subido Exitosamente.");
-                                break;
-                            case "UPLOAD_ERROR":
-                                rm.sendMessage("Error al subir archivo: " + response[2]);
-                                break;
-
-                            default:
-                                rm.sendMessage("Respuesta no reconocida del cliente");
-                                break;
-                        }
-                        break;
-                    case 4:
-                        // El cliente se saldra
-                        rm.sendExit();
+                switch (option) {
+                    case 1 -> {
+                        logger.info("CLIENT", "LIST_FILES_REQUEST", "Cliente solicitó listar archivos", clientInfo);
+                        serverHandler.handleListFiles();
+                    }
+                    case 2 -> {
+                        logger.info("CLIENT", "DOWNLOAD_REQUEST", "Cliente solicitó descargar archivo", clientInfo);
+                        serverHandler.handleDownloadRequest();
+                    }
+                    case 3 -> {
+                        logger.info("CLIENT", "UPLOAD_REQUEST", "Cliente solicitó subir archivo", clientInfo);
+                        serverHandler.handleUploadRequest();
+                    }
+                    case 4 -> {
+                        logger.info("CLIENT", "EXIT_REQUEST", "Cliente solicitó salir", clientInfo);
+                        serverHandler.sendExit();
                         keepRunning = false;
-
-                        break;
-
-                    default:
-                        rm.sendMessage("La opcion ingresada no es valida.");
-                        break;
+                    }
+                    default -> {
+                        logger.warn("CLIENT", "INVALID_OPTION", "Opción inválida: " + option, clientInfo);
+                        serverHandler.sendMessage("Opcion invalida");
+                    }
                 }
 
-                if (keepRunning)
-                    rm.sendPause("continuar");
-
+                if (keepRunning) {
+                    serverHandler.sendReply(RequestManager.CommandType.PAUSE, "continuar");
+                }
             }
-            // Liberar memoria y cerrar conexion
-            rm.closeRequestManager();
-            cleanUp();
+
         } catch (IOException e) {
+            logger.error("CLIENT", "HANDLER_ERROR", "Error en manejo de cliente: " + e.getMessage(), clientInfo);
+        } finally {
+            logger.info("CLIENT", "SESSION_ENDING", "Finalizando sesión para: " + clientInfo,
+                    client.getInetAddress().toString());
             cleanUp();
-            System.out.println("Error en el hilo: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            System.err.println("Error el tipo de dato de la opcion no es valida: " + e.getMessage());
         }
     }
 
     private void cleanUp() {
+        String clientInfo = client.getInetAddress().toString() + ":" + client.getPort();
+
         try {
+            logger.debug("CLIENT", "CLEANUP_STARTED", "Iniciando limpieza de recursos", clientInfo);
+            if (serverHandler != null)
+                serverHandler.close();
             client.close();
+            logger.info("CLIENT", "DISCONNECTED", "Cliente desconectado exitosamente",
+                    client.getInetAddress().toString());
         } catch (IOException e) {
             System.out.println("Error al cerrar la conexion al cliente:" + e.getMessage());
             logger.error("CLIENT", "DISCONNECT_ERROR", "Error al cerrar conexión: " + e.getMessage(),
