@@ -1,0 +1,45 @@
+Especificación del Proyecto Servidor de Archivos Concurrente y Cliente Interactivo (Java, Sockets e Hilos)
+
+Este documento describe los requerimientos para implementar un sistema cliente/servidor en Java utilizando sockets TCP y concurrencia mediante hilos.
+Se permite el uso de hilos tradicionales, hilos virtuales o una combinación de ambos.
+El servidor debe ofrecer servicios de listado, descarga y subida de archivos; el cliente debe poder terminar la sesión cuando lo decida.
+
+* Menú que el servidor envia al cliente al establecer la conexión:
+	1) Listar archivos disponibles
+	2) Solicitar archivo existente
+	3) Subir archivo al servidor
+	4) Terminar el cliente
+
+* Requisitos Funcionales
+
+- Servidor
+	- Puerto configurable (argumento de línea de comandos o archivo de configuración).
+	- Concurrencia: cada cliente debe atenderse en un hilo independiente (normal, virtual o mixto).
+	- Enviar el menú anterior inmediatamente después de aceptar la conexión.
+	- Listar archivos: devolver los nombres existentes en un directorio base configurado.
+	- Descargar archivo (opción 2): verificar existencia, enviar primero el tamaño y luego el flujo binario del archivo.
+	- Subir archivo (opción 3): recibir nombre y tamaño, luego el contenido binario, definir politica para conflictos de nombres (sobrescribir/renombrar).
+	- Terminar cdiente (opción 4): cerrar únicamente el socket del cliente, el servidor se mantiene operativo.
+	- Registro (logs) de conexiones, operaciones realizadas y errores.
+
+- Cliente
+	- Conexión configurable: host/IP y puerto ingresados por consola o archivo de configuración.
+	- Mostrar el menú recibido y validar la opción seleccionada
+	- Listar archivos: presentar en consola o interfaz textual la lista enviada por el servidor.
+	- Descargar archivo: solicitar nombre, recibir tamaño y guardar el archivo localmente en un directorio definido.
+	- Subir archivo: seleccionar archivo local, enviar metadatos (nombre/tamaño) y transmitir los bytes.
+	- Manejo de errores: opciones inválidas, archivo inexistente, desconexiones inesperadas.
+	- Cierre ordenado: liberar sockets, streams y otros recursos al finalizar.
+
+- Requisitos Técnicos
+	- Java 21+ recomendado (para hilos virtuales); versiones anteriores son aceptadas si sólo se emplean hilos tradicionales.
+	- Sockets TCP: uso de ServerSocket/Socket y flujos (InputStream/OutputStream) con buffering adecuado.
+	- Definir y documentar un protocolo propio: orden y formato de los mensajes, delimitadores, y manejo de fin de transmisión.
+	- Mensajería de control en texto codificado en UTF-8; transmisión de archivos en flujo binario sin corrupción de datos.
+	- Manejo correcto de archivos binarios y de texto tanto en el servidor como en el cliente.
+
+- Notas Adicionales
+	- El directorio base del servidor debe existir o crearse durante el inicio de la aplicación
+	- El cliente debe almacenar los archivos descargados en un directorio local dedicado (por ejemplo, 'downloads').
+	- Todas las excepciones deben ser manejadas adecuadamente para evitar caidas inesperadas del sistema.
+	- Asegurar el cierre correcto de los recursos (sockets, streams y hilos) en todos los flujos de ejecución.
