@@ -1,0 +1,78 @@
+Especificación del Proyecto: Servidor de Chat Concurrente en Java
+
+
+* Objetivo General
+    Desarrollar un sistema de comunicación en red que implemente un servidor de chat capaz de gestionar múltiples clientes simultáneos,
+    permitiendo el intercambio de mensajes privados y grupales, utilizando Sockets TCP/IP y hilos en Java.
+
+
+* Herramientas y Tecnologías
+    - Lenguaje: Java (versión 11 o superior)
+    - Conexión en red: Sockets TCP
+    - Concurrencia: Hilos tradicionales o virtuales
+    - E/S: Streams (InputStream, OutputStream, BufferedReader, PrintWriter)
+    - Estructuras en memoria: Arreglos (no colecciones)
+    - Persistencia opcional: Archivos de texto
+
+
+* Descripción del Sistema
+    El sistema se compone de dos aplicaciones:
+
+    1. Servidor de Chat
+        Escucha peticiones de dientes en un puerto TCP configurado.
+        Crea un hilo por cliente conectado.
+        - Administra una lista de usuarios activos.
+        Entrega mensajes de forma privada o grupal.
+        Notifica cuando un cliente se conecta o se desconecta.
+
+    2. Cliente de Chat (Consola o GUI opcional)
+        - Se conecta al servidor usando Sockets TCP
+        - Se identifica con un nickname único.
+        - Puede enviar mensajes privados o grupales.
+        - Puede consultar la lista de usuarios conectados.
+
+
+* Funcionalidades del Servidor
+    - Aceptar conexiones de múltiples clientes.
+    - Gestionar múltiples hilos para atención concurrente.
+    - Validar nickname únicos por sesión.
+    - Enviar mensajes privados y grupales.
+    - Listar usuarios conectados.
+    - Notificar eventos de entrada y salida.
+    - Manejar desconexiones abruptas.
+
+
+* Comandos del Protocolo (en español)
+    - Comandos Cliente -> Servidor:
+        - ENTRAR <nick>: Iniciar sesión con nickname
+        - MENSAJE <destinatario> <msg>: Enviar mensaje privado
+        - TODOS <msg>: Enviar mensaje a todos
+        - USUARIOS: Solicitar lista de usuarios conectados
+        - SALIR: Cerrar sesión
+
+    - Respuestas del Servidor -> Cliente:
+        - OK ENTRAR / ERROR ENTRAR
+        - DE <remitente> <msg>: Mensaje recibido
+        - INFO ENTRA <nick>/INFO SALE <nick>
+        - USUARIOS <cantidad> <nicks>
+        - OK SALIR
+
+
+* Concurrencia
+    El servidor debe usar un hilo por cliente.
+    La sincronización de acceso a la lista de usuarios conectados debe evitar condiciones de carrera o interbloqueos.
+    Se permite investigar o comparar el uso de hilos virtuales.
+
+
+* Archivos opcionales
+    - usuarios.txt: lista blanca de nicknames válidos
+    - chat.log: archivo de texto con todos los mensajes enviados (opcional).
+    - servidor.log: bitácora de eventos del servidor.
+
+
+* Requisitos de Validación
+    - Debe haber al menos 3 clientes funcionando al mismo tiempo. Se deben probar:
+        - Envio de mensajes privados y grupales.
+        - Entrada y salida de usuarios.
+        - Consulta de usuarios.
+        - Desconexión inesperada.
