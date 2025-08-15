@@ -1,0 +1,284 @@
+================================================================================
+                    SERVIDOR WEB BÁSICO MULTIHILO EN JAVA
+                           Proyecto/Examen Final
+================================================================================
+
+AUTORES: Diego Cuellar, Johan Cuellar, Andoni Hernandez
+FECHA: 6 de Agosto de 2025
+VERSIÓN: 1.0
+
+================================================================================
+1. DESCRIPCIÓN DEL PROYECTO
+================================================================================
+
+Servidor web simple en Java que maneja solicitudes HTTP GET y POST utilizando
+hilos virtuales para atender múltiples clientes simultáneamente. Incluye sistema
+de logging, detección de tipos MIME, procesamiento de formularios y servicio de
+archivos estáticos.
+
+CARACTERÍSTICAS PRINCIPALES:
+- Puerto específico: 8089
+- Hilos virtuales para manejo concurrente
+- 5 páginas HTML completas
+- 3 formularios POST funcionales
+- Sistema de logs histórico
+- Detección automática de tipos MIME
+- Descarga de archivos mediante formularios
+
+================================================================================
+2. REQUISITOS DEL SISTEMA
+================================================================================
+
+- Java 17 o superior (para hilos virtuales)
+- Maven 3.6 o superior
+- Windows/Linux/macOS
+- Navegador web moderno
+- Mínimo 512 MB de RAM disponible
+
+================================================================================
+3. ESTRUCTURA DEL PROYECTO
+================================================================================
+
+WebServer/
+├── src/main/java/com/webserver/
+│   ├── Main.java              # Servidor principal con hilos virtuales
+│   ├── ClientHandler.java     # Manejo de conexiones individuales
+│   ├── RequestHandler.java    # Procesamiento GET/POST y routing
+│   ├── ThreadLogger.java      # Logging para consola con nombres de hilos
+│   ├── Logger.java            # Sistema de logging histórico
+│   ├── MimeTypesDetector.java # Detección de tipos MIME
+│   ├── FileManager.java       # Gestión de archivos y recursos
+│   ├── DateUtil.java          # Utilidades de fecha/hora
+│   └── Ui.java                # Utilidades de interfaz de consola
+├── src/main/resources/
+│   ├── index.html             # Página principal
+│   ├── html/
+│   │   ├── nosotros.html      # Página "Nosotros"
+│   │   ├── cursos.html        # Página "Cursos"
+│   │   ├── contacto.html      # Formulario de contacto
+│   │   ├── entrada.html       # Página de blog
+│   │   ├── registro.html      # Formulario de registro
+│   │   └── galeria.html       # Formulario de galería (solicitud recursos)
+│   ├── css/                   # Archivos de estilos
+│   ├── js/                    # Archivos JavaScript
+│   └── img/                   # Imágenes (JPG, PNG, WEBP, AVIF, GIF)
+├── target/                    # Archivos compilados
+├── log/                       # Logs históricos (generados automáticamente)
+├── form_submissions/          # Datos de formularios (generados automáticamente)
+└── pom.xml                    # Configuración Maven
+
+================================================================================
+4. INSTALACIÓN Y EJECUCIÓN
+================================================================================
+
+4.1 COMPILACIÓN:
+--------------
+Abrir terminal en la carpeta del proyecto y ejecutar:
+
+    mvn clean compile
+
+4.2 EJECUCIÓN:
+--------------
+Ejecutar el servidor:
+
+    mvn exec:java -Dexec.mainClass="com.webserver.Main"
+
+4.3 ACCESO AL SERVIDOR:
+----------------------
+Una vez iniciado, el servidor estará disponible en:
+
+    http://localhost:8089
+    http://[IP-LOCAL]:8089
+
+El servidor mostrará la IP local en la consola al iniciar.
+
+4.4 DETENER EL SERVIDOR:
+-----------------------
+En la consola del servidor, escribir:
+
+    exit
+
+El servidor se cerrará ordenadamente guardando todos los logs.
+
+================================================================================
+5. FUNCIONALIDADES IMPLEMENTADAS
+================================================================================
+
+5.1 CONFIGURACIÓN DEL SERVIDOR (20%):
+------------------------------------
+✓ ServerSocket en puerto 8089
+✓ Hilos virtuales para múltiples solicitudes simultáneas
+✓ Nombres descriptivos de hilos (client-001, client-002, etc.)
+
+5.2 MANEJO DE SOLICITUDES GET (25%):
+----------------------------------
+✓ Lectura y parsing de solicitudes GET
+✓ Servicio de 5 archivos HTML estáticos
+✓ Servicio de CSS, JavaScript e imágenes
+✓ Respuestas 404 para archivos no encontrados
+
+5.3 MANEJO DE SOLICITUDES POST (25%):
+-----------------------------------
+✓ Lectura y parsing de solicitudes POST
+✓ Procesamiento de datos de formularios
+✓ Guardado en archivos con timestamp
+✓ 3 formularios funcionales:
+  - Contacto (/procesar-contacto)
+  - Registro (/procesar-registro)
+  - Galería (/procesar-galeria) - con solicitud de recursos
+✓ Descarga forzosa de archivos solicitados
+✓ Respuestas 404 para recursos no encontrados
+
+5.4 FUNCIONALIDAD ADICIONAL (10%):
+---------------------------------
+✓ Sistema de logging histórico con archivos diarios
+✓ Detección automática de tipos MIME para:
+  - HTML, CSS, JavaScript
+  - Imágenes: JPG, PNG, GIF, WEBP, AVIF
+
+5.5 DOCUMENTACIÓN Y ESTILO (20%):
+--------------------------------
+✓ Código bien comentado
+✓ Mejores prácticas de Java
+✓ Documentación completa (este archivo)
+
+================================================================================
+6. FORMULARIOS DISPONIBLES
+================================================================================
+
+6.1 FORMULARIO DE CONTACTO:
+--------------------------
+URL: http://localhost:8089/contacto.html
+Campos: nombre, email, mensaje
+Procesamiento: /procesar-contacto
+
+6.2 FORMULARIO DE REGISTRO:
+--------------------------
+URL: http://localhost:8089/registro.html
+Campos: usuario, email, password, edad, país
+Procesamiento: /procesar-registro
+
+6.3 FORMULARIO DE GALERÍA:
+-------------------------
+URL: http://localhost:8089/galeria.html
+Campos: recurso (nombre de archivo)
+Procesamiento: /procesar-galeria
+Funcionalidad especial: Descarga el archivo solicitado si existe
+
+ARCHIVOS DE PRUEBA DISPONIBLES:
+- banner.jpg, banner.webp, banner.avif
+- blog1.jpg, blog1.webp, blog1.avif
+- curso1.jpg, curso2.jpg, curso3.jpg
+- contacto.jpg, contacto.webp, contacto.avif
+- nosotros.jpg, nosotros.webp, nosotros.avif
+
+================================================================================
+7. SISTEMA DE LOGGING
+================================================================================
+
+7.1 LOGGING EN CONSOLA:
+----------------------
+- Mensajes de hilos con formato: "Hilo [client-001] - mensaje"
+- Estados del servidor y conexiones
+- Información de debugging en tiempo real
+
+7.2 LOGGING HISTÓRICO:
+---------------------
+- Archivos diarios en carpeta log/ (formato: DD-MM-YYYY.log)
+- Niveles: INFO, DEBUG, WARN, ERROR
+- IDs únicos para cada entrada
+- Registro de solicitudes HTTP, conexiones y errores
+
+7.3 DATOS DE FORMULARIOS:
+------------------------
+- Archivos individuales en form_submissions/
+- Formato: form_data_TIMESTAMP.txt
+- Incluye información del hilo y timestamp
+
+================================================================================
+8. ARQUITECTURA TÉCNICA
+================================================================================
+
+8.1 HILOS VIRTUALES:
+-------------------
+- Reemplazan thread pools tradicionales
+- Más eficientes y escalables
+- Nombres descriptivos: client-001, client-002, etc.
+- Sin límite artificial de conexiones
+
+8.2 ROUTING DE SOLICITUDES:
+--------------------------
+- GET: Archivos estáticos y navegación
+- POST: Procesamiento de formularios
+- Normalización automática de rutas
+- Detección de tipos de archivo por extensión
+
+8.3 GESTIÓN DE RECURSOS:
+-----------------------
+- FileManager para operaciones de archivos
+- Detección automática de tipos MIME
+- Servicio de imágenes con headers apropiados
+- Content-Disposition: attachment para descargas
+
+================================================================================
+9. TROUBLESHOOTING
+================================================================================
+
+9.1 PUERTO EN USO:
+-----------------
+Error: "Address already in use"
+Solución: Verificar que no haya otro proceso usando el puerto 8089
+
+9.2 ARCHIVO NO ENCONTRADO:
+-------------------------
+Error: 404 en navegador
+Solución: Verificar que el archivo existe en src/main/resources/
+
+9.3 FORMULARIO NO PROCESA:
+-------------------------
+Error: Datos no se guardan
+Solución: Verificar permisos de escritura en el directorio del proyecto
+
+9.4 SERVIDOR NO CIERRA:
+----------------------
+Error: Programa no termina con "exit"
+Solución: Usar Ctrl+C como alternativa (menos elegante)
+
+================================================================================
+10. INFORMACIÓN DE DESARROLLO
+================================================================================
+
+TECNOLOGÍAS UTILIZADAS:
+- Java 17+ (hilos virtuales)
+- Maven para gestión de dependencias
+- ServerSocket para networking
+- HTML5/CSS3 para frontend
+- Logging personalizado
+
+PATRONES DE DISEÑO:
+- Singleton para Logger
+- Factory para detección de MIME types
+- Strategy para manejo de diferentes tipos de solicitudes
+
+MEJORES PRÁCTICAS APLICADAS:
+- Manejo adecuado de recursos con try-with-resources
+- Uso de volatile para variables compartidas entre hilos
+- Separación de responsabilidades en diferentes clases
+- Logging estructurado y consistente
+- Nomenclatura clara y descriptiva
+
+================================================================================
+11. CONTACTO Y SOPORTE
+================================================================================
+
+Para preguntas o problemas:
+- Revisar los logs en la carpeta log/
+- Verificar la consola del servidor
+- Comprobar que todos los archivos estén en su lugar
+
+Proyecto desarrollado como examen final.
+Fecha de entrega: 6 de Agosto de 2025
+
+================================================================================
+                                  FIN
+================================================================================

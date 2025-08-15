@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>BlogDeCafé</title>
+	<meta name="description" content="Pagina web de Blog de café" />
+	<!-- Prefetch -->
+	<link rel="prefetch" href="cursos.html" as="document" />
+
+	<!-- Preload -->
+	<link rel="preload" href="css/normalize.css" as="style" />
+	<link rel="stylesheet" href="css/normalize.css" />
+
+	<link rel="preload" href="css/styles.css" as="style" />
+	<link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+	<header class="header">
+		<div class="contenedor">
+			<div class="barra">
+				<a href="index.html" class="logo">
+					<h1 class="logo__nombre no-margin centrar-texto">Blog<span class="logo__bold">Decafé</span></h1>
+				</a>
+
+				<nav class="navegacion">
+					<a href="nosotros.html" class="navegacion__enlace">Nosotros</a>
+					<a href="cursos.html" class="navegacion__enlace">Cursos</a>
+					<a href="contacto.html" class="navegacion__enlace">Contacto</a>
+					<a href="registro.html" class="navegacion__enlace">Registro</a>
+					<a href="galeria.html" class="navegacion__enlace">Galería</a>
+				</nav>
+			</div>
+		</div>
+
+		<div class="header__texto">
+			<h2 class="no-margin">Blog de café con cosejos y cursos</h2>
+			<p class="no-margin">Aprende de los expertos con las mejores recetas y consejos</p>
+		</div>
+	</header>
+
+	<div class="contenedor contenido-principal">
+		<main class="blog">
+			<h3>Nuestro Blog</h3>
+
+			<article class="entrada">
+				<div class="entrada__img">
+					<picture>
+						<source srcset="img/blog1.avif" type="image/avif" loading="lazy" />
+						<source srcset="img/blog1.webp" type="image/webp" loading="lazy" />
+						<img loading="lazy" src="img/blog1.jpg" alt="Imagen Blog" />
+					</picture>
+				</div>
+				<div class="entrada__contenido">
+					<h4 class="no-margin">Tipos de Granos de Café</h4>
+					<p>
+						En el mundo del café, existen varios tipos de granos que ofrecen sabores y aromas únicos. Los
+						más comunes son el Arábica y el
+						Robusta. El Arábica es conocido por su sabor suave y afrutado, mientras que el Robusta tiene un
+						perfil más fuerte y amargo.
+						Otros granos como el Liberica y Excelsa también aportan características distintivas que vale la
+						pena explorar.
+					</p>
+					<a href="entrada.html" class="boton boton--primario">Leer Entrada</a>
+				</div>
+			</article>
+			<!-- Articulo -->
+
+			<article class="entrada">
+				<div class="entrada__img">
+					<picture>
+						<source srcset="img/blog2.avif" type="image/avif" loading="lazy" />
+						<source srcset="img/blog2.webp" type="image/webp" loading="lazy" />
+						<img src="img/blog2.jpg" alt="Imagen Blog" loading="lazy" />
+					</picture>
+				</div>
+				<div class="entrada__contenido">
+					<h4 class="no-margin">3 Deliciosas Recetas de Café</h4>
+					<p>
+						¿Buscas nuevas maneras de disfrutar tu café? Te presentamos tres recetas deliciosas y fáciles de
+						preparar. Desde un clásico
+						latte con leche espumada, hasta un refrescante café helado y un exótico café con especias. Estas
+						recetas te permitirán
+						experimentar y encontrar tu sabor favorito.
+					</p>
+					<a href="entrada.html" class="boton boton--primario">Leer Entrada</a>
+				</div>
+			</article>
+			<!-- Articulo -->
+
+			<article class="entrada">
+				<div class="entrada__img">
+					<picture>
+						<source srcset="img/blog3.avif" type="image/avif" loading="lazy" />
+						<source srcset="img/blog3.webp" type="image/webp" loading="lazy" />
+						<img src="img/blog3.jpg" alt="Imagen Blog" loading="lazy" />
+					</picture>
+				</div>
+				<div class="entrada__contenido">
+					<h4 class="no-margin">Beneficios del Café</h4>
+					<p>
+						El café no solo es delicioso, sino que también ofrece múltiples beneficios para la salud.
+						Contiene antioxidantes que ayudan a
+						combatir el daño celular, mejora la función cerebral, y puede reducir el riesgo de ciertas
+						enfermedades como el Parkinson y la
+						diabetes tipo 2. Además, es una excelente fuente de energía para comenzar el día.
+					</p>
+					<a href="entrada.html" class="boton boton--primario">Leer Entrada</a>
+				</div>
+			</article>
+			<!-- Articulo -->
+		</main>
+		<aside class="sidebar">
+			<h3>Nuestros Cursos y Talleres</h3>
+
+			<ul class="cursos no-padding">
+				<li class="widget-curso">
+					<h4 class="no-margin">Técnicas de Extracción de Café</h4>
+					<p class="widget-curso__label">Precio: <span class="widget-curso__info">$30 USD</span></p>
+					<p class="widget-curso__label">Cupo: <span class="widget-curso__info">15</span></p>
+					<a href="cursos.html" class="boton boton--secundario">Más Información sobre nuestros cursos</a>
+				</li>
+
+				<li class="widget-curso">
+					<h4 class="no-margin">4 Recetas de Café para Principiantes</h4>
+					<p class="widget-curso__label">Precio: <span class="widget-curso__info">$20 USD</span></p>
+					<p class="widget-curso__label">Cupo: <span class="widget-curso__info">25</span></p>
+					<a href="cursos.html" class="boton boton--secundario">Más Información sobre nuestros cursos</a>
+				</li>
+
+				<li class="widget-curso">
+					<h4 class="no-margin">Taller para Tostar y Moler Granos</h4>
+					<p class="widget-curso__label">Precio: <span class="widget-curso__info">$50 USD</span></p>
+					<p class="widget-curso__label">Cupo: <span class="widget-curso__info">10</span></p>
+					<a href="cursos.html" class="boton boton--secundario">Más Información sobre nuestros cursos</a>
+				</li>
+
+				<li class="widget-curso">
+					<h4 class="no-margin">Arte Latte para Principiantes</h4>
+					<p class="widget-curso__label">Precio: <span class="widget-curso__info">$25 USD</span></p>
+					<p class="widget-curso__label">Cupo: <span class="widget-curso__info">12</span></p>
+					<a href="cursos.html" class="boton boton--secundario">Más Información sobre nuestros cursos</a>
+				</li>
+
+				<li class="widget-curso">
+					<h4 class="no-margin">Cata de Cafés Especiales</h4>
+					<p class="widget-curso__label">Precio: <span class="widget-curso__info">$40 USD</span></p>
+					<p class="widget-curso__label">Cupo: <span class="widget-curso__info">8</span></p>
+					<a href="cursos.html" class="boton boton--secundario">Más Información sobre nuestros cursos</a>
+				</li>
+			</ul>
+		</aside>
+	</div>
+
+	<footer class="footer">
+		<div class="contenedor">
+			<div class="barra">
+				<a href="index.html" class="logo">
+					<h1 class="logo__nombre no-margin centrar-texto">Blog<span class="logo__bold">Decafé</span></h1>
+				</a>
+
+				<nav class="navegacion">
+					<a href="nosotros.html" class="navegacion__enlace">Nosotros</a>
+					<a href="cursos.html" class="navegacion__enlace">Cursos</a>
+					<a href="contacto.html" class="navegacion__enlace">Contacto</a>
+					<a href="registro.html" class="navegacion__enlace">Registro</a>
+					<a href="galeria.html" class="navegacion__enlace">Galería</a>
+				</nav>
+			</div>
+		</div>
+	</footer>
+	<script src="js/modernizer.js"></script>
+</body>
+
+</html>

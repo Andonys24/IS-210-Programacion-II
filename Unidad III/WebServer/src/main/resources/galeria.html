@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Galería - BlogDeCafé</title>
+</head>
+
+<body>
+    <header class="header">
+        <div class="contenedor">
+            <div class="barra">
+                <a href="index.html" class="logo">
+                    <h1 class="logo__nombre no-margin centrar-texto">Blog<span class="logo__bold">Decafé</span></h1>
+                </a>
+
+                <nav class="navegacion">
+                    <a href="nosotros.html" class="navegacion__enlace">Nosotros</a>
+                    <a href="cursos.html" class="navegacion__enlace">Cursos</a>
+                    <a href="contacto.html" class="navegacion__enlace">Contacto</a>
+                    <a href="galeria.html" class="navegacion__enlace">Galería</a>
+                </nav>
+            </div>
+        </div>
+
+        <div class="header__texto">
+            <h2 class="no-margin">Galería de imágenes</h2>
+            <p class="no-margin">Solicita y descarga nuestras mejores fotografías</p>
+        </div>
+    </header>
+
+    <main class="contenedor">
+        <h3 class="centrar-texto">Solicitar Imagen</h3>
+
+        <p class="centrar-texto">Selecciona una imagen de nuestra galería para descargar:</p>
+
+        <form class="formulario" action="/solicitar-imagen" method="POST">
+            <div class="campo">
+                <label class="campo__label" for="nombre">Tu Nombre: </label>
+                <input class="campo__field" type="text" name="nombre" placeholder="Nombre completo" id="nombre"
+                    required>
+            </div>
+
+            <div class="campo">
+                <label class="campo__label" for="email">E-mail: </label>
+                <input class="campo__field" type="email" name="email" placeholder="tu@email.com" id="email" required>
+            </div>
+
+            <div class="campo">
+                <label class="campo__label" for="recurso">Imagen solicitada: </label>
+                <select class="campo__field" name="recurso" id="recurso" required>
+                    <option value="">Selecciona una imagen</option>
+                    <optgroup label="Banners">
+                        <option value="img/banner.jpg">Banner Principal (JPG)</option>
+                        <option value="img/banner.webp">Banner Principal (WebP)</option>
+                        <option value="img/banner.avif">Banner Principal (AVIF)</option>
+                    </optgroup>
+                    <optgroup label="Blog Posts">
+                        <option value="img/blog1.jpg">Artículo Blog 1 (JPG)</option>
+                        <option value="img/blog2.jpg">Artículo Blog 2 (JPG)</option>
+                        <option value="img/blog3.jpg">Artículo Blog 3 (JPG)</option>
+                    </optgroup>
+                    <optgroup label="Cursos">
+                        <option value="img/curso1.jpg">Curso de Barista (JPG)</option>
+                        <option value="img/curso2.jpg">Curso de Tostado (JPG)</option>
+                        <option value="img/curso3.jpg">Curso Avanzado (JPG)</option>
+                    </optgroup>
+                    <optgroup label="Secciones">
+                        <option value="img/nosotros.jpg">Página Nosotros (JPG)</option>
+                        <option value="img/contacto.jpg">Página Contacto (JPG)</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="campo">
+                <label class="campo__label" for="motivo">Motivo de solicitud: </label>
+                <textarea class="campo__field campo__field--textarea" name="motivo" id="motivo"
+                    placeholder="¿Para qué necesitas esta imagen?" required></textarea>
+            </div>
+
+            <div class="campo">
+                <input type="submit" value="Solicitar Imagen" class="boton boton--primario">
+            </div>
+        </form>
+
+        <div style="margin-top: 3rem;">
+            <h4 class="centrar-texto">Vista previa de imágenes disponibles:</h4>
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem;">
+                <img src="img/banner.jpg" alt="Banner" style="width: 100%; border-radius: 5px;">
+                <img src="img/blog1.jpg" alt="Blog 1" style="width: 100%; border-radius: 5px;">
+                <img src="img/curso1.jpg" alt="Curso 1" style="width: 100%; border-radius: 5px;">
+                <img src="img/nosotros.jpg" alt="Nosotros" style="width: 100%; border-radius: 5px;">
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="contenedor">
+            <div class="barra">
+                <a href="index.html" class="logo">
+                    <h1 class="logo__nombre no-margin centrar-texto">Blog<span class="logo__bold">Decafé</span></h1>
+                </a>
+
+                <nav class="navegacion">
+                    <a href="nosotros.html" class="navegacion__enlace">Nosotros</a>
+                    <a href="cursos.html" class="navegacion__enlace">Cursos</a>
+                    <a href="contacto.html" class="navegacion__enlace">Contacto</a>
+                    <a href="galeria.html" class="navegacion__enlace">Galería</a>
+                </nav>
+            </div>
+        </div>
+    </footer>
+    <script src="js/modernizer.js"></script>
+</body>
+
+</html>
